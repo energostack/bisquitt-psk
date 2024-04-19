@@ -1,0 +1,18 @@
+services:
+  api:
+    image: bisquitt_psk
+    ports:
+      - "3000:3000"
+    volumes:
+        - ./data:/app/data
+    environment:
+      - HOST=localhost
+      - PORT=3000
+      - FILE_PATH=/app/data/data.csv
+      - BASIC_AUTH_USERNAME=admin
+      - BASIC_AUTH_PASSWORD=admin
+      - KAFKA_BROKER=kafka:9092
+      - KAFKA_TOPIC=clients
+      #CSV, SQLITE, KAFKA
+      - DATA_SOURCE=csv
+
