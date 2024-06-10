@@ -1,0 +1,119 @@
+services:
+  test_runner:
+    image: bisquitt_psk
+    environment:
+      - KAFKA_TOPIC=clients
+      - KAFKA_BROKER=kafka:9092
+      - SERVICE_URL=http://api:3000
+      - TEST=1
+      - BASIC_AUTH_USERNAME=admin
+      - BASIC_AUTH_PASSWORD=admin
+      - MQTT_BROKER=mqtt:1883
+      - MQTT_TOPIC=messages
+    depends_on:
+      - api
+    logging:
+      driver: local
+  api:
+    image: bisquitt_psk
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - HOST=localhost
+      - PORT=3000
+      - BASIC_AUTH_USERNAME=admin
+      - BASIC_AUTH_PASSWORD=admin
+      - KAFKA_BROKER=kafka:9092
+      - KAFKA_TOPIC=clients
+      - DATA_SOURCE=kafka
+    healthcheck:
+      test: curl -u admin:admin --fail http://localhost:3000/clients/bisquitt || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      kafka:
+        condition: service_healthy
+  kafka:
+    image: docker.io/bitnami/kafka:3.7
+    ports:
+      - "9092:9092"
+    environment:
+      # KRaft settings
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
+      # Listeners
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+    healthcheck:
+      test: kafka-topics.sh --bootstrap-server localhost:9092 --list
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 2s
+  bisquitt-gateway:
+    image: energomonitor/bisquitt:0.7.0
+    ports:
+      - "8883:8883/udp"
+    environment:
+      MQTT_HOST: mqtt
+      MQTT_PORT: 1883
+      PREDEFINED_TOPIC: messages-predefined;17,messages-predefined-qos3;18
+      DTLS_ENABLED: 1
+      PSK_ENABLED: 1
+      PSK_IDENTITY: bisquitt
+      PSK_API_BASIC_AUTH_USERNAME: admin
+      PSK_API_BASIC_AUTH_PASSWORD: admin
+      PSK_API_ENDPOINT: http://api:3000/clients
+      DEBUG: 1
+      #INSECURE: 1
+      BISQUITT_USER: bisquitt
+      BISQUITT_GROUP: bisquitt
+      GORACE: halt_on_error=1
+    depends_on:
+        mqtt:
+          condition: service_started
+        api:
+          condition: service_healthy
+    logging:
+      driver: local
+  bisquitt-pub:
+    image: energomonitor/bisquitt:0.7.0
+    command: ["sh", "-c", "bisquitt-pub -h bisquitt-gateway -p 8883 -t messages -m 'Hello, World!' && sleep 60"]
+    environment:
+      DTLS_ENABLED: 1
+      PSK_ENABLED: 1
+      PSK_IDENTITY: bisquitt
+      PSK_API_BASIC_AUTH_USERNAME: admin
+      PSK_API_BASIC_AUTH_PASSWORD: admin
+      PSK_API_ENDPOINT: http://api:3000/clients
+      DEBUG: 1
+      #INSECURE: 1
+      BISQUITT_USER: bisquitt
+      BISQUITT_GROUP: bisquitt
+      GORACE: halt_on_error=1
+    depends_on:
+      bisquitt-gateway:
+        condition: service_started
+      api:
+        condition: service_healthy
+      test_runner:
+        condition: service_started
+    logging:
+      driver: local
+  mqtt:
+    image: eclipse-mosquitto:latest
+    container_name: mosquitto
+    ports:
+      - "1883:1883"
+    command: >
+      sh -c "
+      echo 'listener 1883' >> /mosquitto/config/mosquitto.conf &&
+      echo 'allow_anonymous true' >> /mosquitto/config/mosquitto.conf &&
+      mosquitto -c /mosquitto/config/mosquitto.conf"

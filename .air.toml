@@ -1,0 +1,18 @@
+[build]
+cmd = "go build -o api /app/cmd/api"
+bin = "/app/api"
+include = [
+    "**/*.go"
+]
+exclude = [
+    "**/*_test.go"
+]
+
+[run]
+env = [
+    "ENV=dev"
+]
+
+[log]
+# Set log level (options: "debug", "info", "warn", "error", "fatal", "panic")
+level = "info"

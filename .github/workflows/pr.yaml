@@ -1,0 +1,55 @@
+name: Pull request workflow
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  go_unit_test:
+
+    runs-on: ubuntu-latest
+    steps:
+      # Check version first, then go test
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Semver tool
+        run: |
+          curl -sL https://raw.githubusercontent.com/fsaintjacques/semver-tool/master/src/semver -o semver
+          chmod +x semver
+
+      - name: Read current version from file
+        id: file_version
+        run: echo "FILE_VERSION=$(cat VERSION)" >> $GITHUB_ENV
+
+      - name: Get latest tag
+        id: get_latest_tag
+        uses: WyriHaximus/github-action-get-previous-tag@v1
+        with:
+          fallback: 0.0.0
+
+      - name: Compare versions
+        id: version_compare
+        run: |
+          if ./semver compare ${{ env.FILE_VERSION }} ${{ steps.get_latest_tag.outputs.tag }} > 0
+          then
+            echo "Version ${{ env.FILE_VERSION }} is greater than ${{ steps.get_latest_tag.outputs.tag }}"
+            exit 0
+          else
+            echo "Version ${{ env.FILE_VERSION }} is not greater than ${{ steps.get_latest_tag.outputs.tag }}"
+            exit 1
+          fi
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+          cache-dependency-path: ./go.sum
+
+      - name: Unit test
+        run: make test
+
+      - name: E2E test
+        run: make e2e-test
+
+
