@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"bisquitt-psk/pkg/mapstore"
+	"github.com/energostack/bisquitt-psk/pkg/mapstore"
 )
 
 // Data is an object of client IDs (string) and  PSK (byte slice).

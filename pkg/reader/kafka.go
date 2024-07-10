@@ -3,8 +3,8 @@ package reader
 import (
 	"context"
 
-	"bisquitt-psk/pkg/clientmap"
-	"bisquitt-psk/pkg/config"
+	"github.com/energostack/bisquitt-psk/pkg/clientmap"
+	"github.com/energostack/bisquitt-psk/pkg/config"
 
 	"github.com/IBM/sarama"
 	"github.com/rs/zerolog/log"

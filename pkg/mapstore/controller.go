@@ -1,8 +1,8 @@
 package mapstore
 
 import (
-	"bisquitt-psk/pkg/clientmap"
-	"bisquitt-psk/pkg/reader"
+	"github.com/energostack/bisquitt-psk/pkg/clientmap"
+	"github.com/energostack/bisquitt-psk/pkg/reader"
 
 	"github.com/rs/zerolog/log"
 )
