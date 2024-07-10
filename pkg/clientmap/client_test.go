@@ -3,7 +3,7 @@ package clientmap_test
 import (
 	"testing"
 
-	"bisquitt-psk/pkg/clientmap"
+	"github.com/energostack/bisquitt-psk/pkg/clientmap"
 
 	"github.com/stretchr/testify/assert"
 )

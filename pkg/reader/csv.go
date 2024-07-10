@@ -6,7 +6,7 @@ import (
 	"io"
 	"os"
 
-	"bisquitt-psk/pkg/clientmap"
+	"github.com/energostack/bisquitt-psk/pkg/clientmap"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/rs/zerolog/log"

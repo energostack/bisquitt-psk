@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"bisquitt-psk/pkg/reader"
+	"github.com/energostack/bisquitt-psk/pkg/reader"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

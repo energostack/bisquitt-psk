@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"bisquitt-psk/pkg/reader"
+	"github.com/energostack/bisquitt-psk/pkg/reader"
 
 	_ "github.com/glebarez/go-sqlite"
 	"github.com/stretchr/testify/assert"

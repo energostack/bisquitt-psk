@@ -3,8 +3,8 @@ package mapstore_test
 import (
 	"testing"
 
-	"bisquitt-psk/pkg/clientmap"
-	"bisquitt-psk/pkg/mapstore"
+	"github.com/energostack/bisquitt-psk/pkg/clientmap"
+	"github.com/energostack/bisquitt-psk/pkg/mapstore"
 
 	"github.com/stretchr/testify/assert"
 )

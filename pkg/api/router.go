@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"bisquitt-psk/pkg/config"
+	"github.com/energostack/bisquitt-psk/pkg/config"
 
 	"github.com/Lavalier/zchi"
 	"github.com/go-chi/chi/v5"

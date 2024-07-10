@@ -6,10 +6,10 @@ import (
 	"os/signal"
 	"runtime/debug"
 
-	"bisquitt-psk/pkg/api"
-	"bisquitt-psk/pkg/config"
-	"bisquitt-psk/pkg/mapstore"
-	"bisquitt-psk/pkg/reader"
+	"github.com/energostack/bisquitt-psk/pkg/api"
+	"github.com/energostack/bisquitt-psk/pkg/config"
+	"github.com/energostack/bisquitt-psk/pkg/mapstore"
+	"github.com/energostack/bisquitt-psk/pkg/reader"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"

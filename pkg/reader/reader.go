@@ -1,6 +1,6 @@
 package reader
 
-import "bisquitt-psk/pkg/clientmap"
+import "github.com/energostack/bisquitt-psk/pkg/clientmap"
 
 // Reader is an interface for reading clients.
 type Reader interface {

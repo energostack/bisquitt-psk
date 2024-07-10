@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 
-	"bisquitt-psk/pkg/clientmap"
+	"github.com/energostack/bisquitt-psk/pkg/clientmap"
 
 	"github.com/fsnotify/fsnotify"
 	_ "github.com/glebarez/go-sqlite"
